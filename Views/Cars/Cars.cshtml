@@ -1,0 +1,140 @@
+﻿@model CreateCarViewModel
+@{
+    var XLabels = Newtonsoft.Json.JsonConvert.SerializeObject(Model.Chart.Select(x => x.Colour).ToList());
+    var YValues = Newtonsoft.Json.JsonConvert.SerializeObject(Model.Chart.Select(x => x.Quantity).ToList());
+    ViewData["Title"] = "Created cars";
+}
+<h1>@ViewData["Cars"]</h1>
+
+  <div clas="row">
+    <div class="form-group">
+        <label for="groupname">Filter by group name</label>
+        @using (Html.BeginForm("FilterByGroup", "Cars", FormMethod.Post, new { @class = "form-inline" }))
+        {
+          @Html.DropDownListFor(model => model.SelectedGroup, Model.Groups, "No filter", new { @class = "form-control" })
+          <button type="submit" class="btn btn-primary">Filter</button>
+        }
+
+    </div>
+      <hr/>
+    <div class="row justify-content-center">
+        <div class="col-sm">
+            <div class="card" style="height: 40;">
+              <div class="card-body">
+                  <h5 class="card-title">@Html.DisplayFor(modelItem => modelItem.PercentageOfNewCars)%</h5>
+                  <p>new cars</p>
+              </div>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="card" style="height: 20;">
+              <div class="card-body">
+                  <div class="chart-container">
+                    <canvas id="chart" style="width: 150px; height:150px"></canvas>
+                  </div>
+              </div>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="card" style="height: 30;">
+              <div class="card-body">
+                  <h5 class="card-title">@Html.DisplayFor(modelItem => modelItem.AveragePrice)$</h5>
+                  <p>average price</p>
+              </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+<hr/>
+
+<form method="post" asp-controller="Cars" asp-action="Cars">
+    <div class="row justify-content-md-center">
+
+      <div class="col col-lg-2">
+        @Html.DropDownListFor(model => model.SelectedColour, Model.Colours, "Select color", new { @class = "form-control"})
+      </div>
+      <div class="col col-lg-2">
+        @Html.DropDownListFor(model => model.SelectedCondition, Model.Conditions, "Select condition", new { @class = "form-control"})
+      </div>
+      <div class="col col-lg-2">
+        <input placeholder="Price" class="form-control" asp-for="Price" />
+      </div>
+      <div class="col col-lg-2">
+        <button type="submit" class="btn btn-primary">Add</button>
+      </div>
+    </div>
+</form>
+
+<hr/>
+<table class="table">
+    <tr>
+        <th>
+            Color
+        </th>
+        <th>
+            Condition
+        </th>
+        <th>
+            Price
+        </th>
+    </tr>
+
+    @foreach (var item in Model.Cars)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Color.ColorName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Condition.Condition)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+
+        </tr>
+    }
+</table>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>  
+<script type="text/javascript">  
+        $(function () {  
+    var chartName = "chart";  
+        var ctx = document.getElementById(chartName).getContext('2d');  
+        var data = {  
+                labels: @Html.Raw(XLabels),  
+                datasets: [{  
+                    labels: ["black", "red", "white", "green"],
+                    backgroundColor: [  
+                        'rgba(0, 0, 0, 1)',  
+                        'rgba(241, 37, 13, 1)',  
+                        'rgba(255, 255, 255, 1)', 
+                        'rgba(15, 180, 53, 1)',    
+                    ],
+                    borderColor: [
+                        'rgba(0, 0, 0, 1)',  
+                        'rgba(241, 37, 13, 1)',  
+                        'rgba(255, 255, 255, 1)', 
+                        'rgba(15, 180, 53, 1)',  
+                    ],
+                    borderWidth: 1,  
+                    data: @Html.Raw(YValues)  
+    }]  
+            };  
+  
+    var options = {  
+          title: {
+            display: true,
+            text: 'Color'
+          }
+            };  
+  
+       var myChart = new  Chart(ctx, {  
+                options: options,  
+                data: data,  
+                type:'doughnut'  
+  
+            });  
+        });  
+</script>  

@@ -1,0 +1,23 @@
+@model CreateJoinGroupVM
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<form method="post" asp-controller="Group" asp-action="GroupCreated">
+  <div class="form-group">
+    <label for="groupname">Group name</label>
+    <input placeholder="Group name" class="form-control" asp-for="Group.Name" />
+     <span asp-validation-for="Group.Name" class="text-danger"></span>
+  </div>
+  <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+<hr/>
+
+<form method="post" asp-controller="Group" asp-action="JoinGroup">
+  <div class="form-group">
+    <label for="groupname">Group name</label>
+    @Html.DropDownListFor(model => model.SelectedGroup, Model.AllGroups, "Select group", new { @class = "form-control"})
+  </div>
+  <button type="submit" class="btn btn-primary">Join</button>
+</form>

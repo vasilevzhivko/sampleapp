@@ -1,0 +1,55 @@
+@model AdminPageViewModel
+
+
+<form method="post" asp-controller="Admin" asp-action="AddUserToGroup">
+    <div class="row justify-content-md-center">
+        <h5>Add user to grup</h5>
+      <div class="col col-lg-2">
+        @Html.DropDownListFor(model => model.SelectedUser, Model.Users, "Select user", new { @class = "form-control"})
+      </div>
+      <div class="col col-lg-2">
+        @Html.DropDownListFor(model => model.SelectedGroup, Model.Groups, "Select group", new { @class = "form-control"})
+      </div>
+      <div class="col col-lg-2">
+        <button type="submit" class="btn btn-primary">Add</button>
+      </div>
+    </div>
+</form>
+
+<hr/>
+
+<div class="text-center">
+    <h5>Approve group</h5>
+</div>
+    <table class="table">
+    <tr>
+        <th>
+            Id
+        </th>
+        <th>
+            Name
+        </th>
+        <th>
+            Status
+        </th>
+    </tr>
+
+    @foreach (var item in Model.AllGroups)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsApproved)
+            </td>
+            <td>
+                @Html.ActionLink("Approve", "Approve", "Admin", new { id = item.Id })
+            </td>
+
+        </tr>
+    }
+</table>
